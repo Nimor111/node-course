@@ -10,12 +10,28 @@ it('should add two numbers', () => {
     .toBeA('number');
 });
 
+it('should add two numbers asynchronously', done => {
+  utils.asyncAdd(4, 3, sum => {
+    expect(sum)
+      .toBe(7)
+      .toBeA('number');
+    done();
+  });
+});
+
 it('should square a number', () => {
   const res = utils.square(11);
 
   expect(res)
     .toBe(121)
     .toBeA('number');
+});
+
+it('should square a number asynchronously', done => {
+  utils.asyncSquare(5, sq => {
+    expect(sq).toBe(25);
+    done();
+  });
 });
 
 it('should expect some values', () => {
