@@ -1,4 +1,4 @@
-const MongoClient = require('mongodb').MongoClient;
+const {MongoClient, ObjectID} = require('mongodb');
 
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
   if (err) {
@@ -17,9 +17,9 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
   // });
 
   db
-    .collection('Users')
+    .collection('Todos')
     .insertOne(
-      {name: 'George', age: 21, location: 'Kushtata na Ivankata'},
+      {name: 'Walk dog', location: 'Kushtata na Ivankata', completed: false},
       (err, res) => {
         if (err) {
           return console.log('Unable to insert document.', err);
