@@ -38,7 +38,7 @@ app.get('/todos/:id', (req, res) => {
   Todo.findById(req.params.id)
     .then(todo => {
       if (!todo) {
-        res.status(404).send({error: 'Todo not found!'});
+        return res.status(404).send({error: 'Todo not found!'});
       }
       res.send({todo});
     })
@@ -47,8 +47,10 @@ app.get('/todos/:id', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-  console.log('Started on port 3000');
-});
+if (!module.parent) {
+  app.listen(3000, () => {
+    console.log('Started on port 3000');
+  });
+}
 
 module.exports = {app};
