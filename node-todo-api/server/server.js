@@ -2,10 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const {mongoose} = require('./db/mongoose');
+const {config} = require('./config');
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
 
 const app = express();
+const port = config.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -48,8 +50,8 @@ app.get('/todos/:id', (req, res) => {
 });
 
 if (!module.parent) {
-  app.listen(3000, () => {
-    console.log('Started on port 3000');
+  app.listen(port, () => {
+    console.log(`Started on port ${port}`);
   });
 }
 
