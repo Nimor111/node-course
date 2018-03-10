@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 const {mongoose} = require('./db/mongoose');
 const {config} = require('./config');
@@ -49,10 +50,28 @@ app.get('/todos/:id', (req, res) => {
     });
 });
 
+app.delete('/todos/:id', (req, res) => {
+  if (!ObjectID.isValid(req.params.id)) {
+    return res.status(400).send();
+  }
+
+  Todo.findByIdAndRemove(req.params.id)
+    .then(todo => {
+      if (!todo) {
+        return res.status(404).send({error: 'Todo not found!'});
+      }
+      res.json(todo);
+    })
+    .catch(err => {
+      res.status(400).send(err);
+    });
+});
+
 if (!module.parent) {
   app.listen(port, () => {
     console.log(`Started on port ${port}`);
   });
 }
 
+module.exports = {app};
 module.exports = {app};
