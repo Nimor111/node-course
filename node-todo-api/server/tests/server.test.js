@@ -266,6 +266,7 @@ describe('POST /users', () => {
           .catch(err => done(err));
       });
   });
+
   it('should raise validation errors if body invalid', done => {
     request
       .post('/users')
@@ -273,11 +274,64 @@ describe('POST /users', () => {
       .expect(400)
       .end(done);
   });
+
   it('should not create user if email already in use', done => {
     request
       .post('/users')
       .send({email: users[0].email, password: 'Password123!'})
       .expect(400)
       .end(done);
+  });
+});
+
+describe('POST /users/login', () => {
+  it('should login user successfully', done => {
+    const credentials = {email: users[1].email, password: users[1].password};
+    request
+      .post('/users/login')
+      .send(credentials)
+      .expect(200)
+      .expect(res => {
+        expect(res.header['x-auth']).toBeTruthy();
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        User.findById(users[1]._id)
+          .then(user => {
+            expect(user.tokens[0]).toHaveProperty('access', 'auth');
+            expect(user.tokens[0]).toHaveProperty(
+              'token',
+              res.header['x-auth'],
+            );
+            done();
+          })
+          .catch(err => done(err));
+      });
+  });
+
+  it('should reject login on invalid password', done => {
+    const credentials = {email: users[1].email, password: '123'};
+    request
+      .post('/users/login')
+      .send(credentials)
+      .expect(400)
+      .expect(res => {
+        expect(res.header['x-auth']).toBeFalsy();
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        User.findById(users[1]._id)
+          .then(user => {
+            expect(user.tokens.length).toEqual(0);
+            done();
+          })
+          .catch(err => done(err));
+      });
   });
 });
