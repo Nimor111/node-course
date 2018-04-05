@@ -11,6 +11,7 @@ const {config} = require('./config');
 
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
+const {authenticate} = require('./middleware/authenticate');
 
 const app = express();
 const port = config.port;
@@ -118,6 +119,10 @@ app.post('/users', (req, res) => {
       res.header('x-auth', token).send(user);
     })
     .catch(err => res.status(400).send(err));
+});
+
+app.get('/users/profile', authenticate, (req, res) => {
+  res.send(req.user);
 });
 /**** User routes ****/
 
