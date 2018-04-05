@@ -13,6 +13,7 @@ const todos = [
     text: 'First test todo',
   },
   {
+    _id: new ObjectID(),
     text: 'Second test todo',
   },
 ];
@@ -117,6 +118,48 @@ describe('GET /todos/:id', () => {
 
     request
       .get(`/todos/${fakeID}`)
+      .expect(400)
+      .end(done);
+  });
+});
+
+describe('DELETE todos/:id', () => {
+  it('should delete todo with valid id', done => {
+    const id = todos[0]._id.toHexString();
+
+    Todo.count({}, (err, todo_count) => {
+      request
+        .delete(`/todos/${id}`)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+
+          Todo.find()
+            .then(todos => {
+              expect(todos.length).toBe(todo_count - 1);
+              done();
+            })
+            .catch(err => done(err));
+        });
+    });
+  });
+
+  it('should return 404 on non-existing but valid id', done => {
+    const non_existent_id = new ObjectID().toHexString();
+
+    request
+      .delete(`/todos/${non_existent_id}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 400 on invalid id', done => {
+    const invalid_id = '123';
+
+    request
+      .delete(`/todos/${invalid_id}`)
       .expect(400)
       .end(done);
   });
