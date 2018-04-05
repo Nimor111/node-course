@@ -17,6 +17,7 @@ const port = config.port;
 
 app.use(bodyParser.json());
 
+/**** Todo routes ****/
 app.post('/todos', (req, res) => {
   const newTodo = new Todo({
     text: req.body.text,
@@ -100,6 +101,25 @@ app.patch('/todos/:id', (req, res) => {
       res.status(400).send();
     });
 });
+/**** Todo routes ****/
+
+/**** User routes ****/
+app.post('/users', (req, res) => {
+  const body = _.pick(req.body, ['email', 'password']);
+
+  const user = new User(body);
+
+  user
+    .save()
+    .then(() => {
+      return user.generateAuthToken();
+    })
+    .then(token => {
+      res.header('x-auth', token).send(user);
+    })
+    .catch(err => res.status(400).send(err));
+});
+/**** User routes ****/
 
 if (!module.parent) {
   app.listen(port, () => {
