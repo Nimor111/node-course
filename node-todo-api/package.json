@@ -17,6 +17,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "install": "^0.10.4",
+    "lodash": "^4.17.5",
     "mongodb": "^3.0.0-rc0",
     "mongoose": "^5.0.7",
     "prettier": "^1.9.2"
