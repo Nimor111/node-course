@@ -220,7 +220,7 @@ describe('GET /users/profile', () => {
   it('should return a user if authenticated', done => {
     request
       .get('/users/profile')
-      .set('x-auth', users[0].tokens.token)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect(res => {
         expect(res.body._id).toBe(users[0]._id.toHexString());
@@ -340,7 +340,7 @@ describe('DELETE /users/logout', () => {
   it('should delete auth token from a user on logout', done => {
     request
       .delete('/users/logout')
-      .set('x-auth', users[0].tokens.token)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .end((err, res) => {
         if (err) {

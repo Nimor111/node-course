@@ -11,10 +11,12 @@ const users = [
     _id: userOneId,
     email: 'georgi@example.com',
     password: 'firstPass',
-    tokens: {
-      access: 'auth',
-      token: jwt.sign({_id: userOneId, access: 'auth'}, 'abc123').toString(),
-    },
+    tokens: [
+      {
+        access: 'auth',
+        token: jwt.sign({_id: userOneId, access: 'auth'}, 'abc123').toString(),
+      },
+    ],
   },
   {
     _id: userTwoId,
