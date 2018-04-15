@@ -30,10 +30,11 @@ io.on('connection', socket => {
     generateMessage('Admin', 'New user just joined!'),
   );
 
-  socket.on('createMessage', newMessage => {
+  socket.on('createMessage', (newMessage, callback) => {
     console.log('Sent a message', newMessage);
 
     io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
+    callback('This is the acknowledgment from the server');
   });
 
   socket.on('disconnect', () => {
