@@ -3,19 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="/css/styles.css" type="text/css" />
     <title>Chat</title>
   </head>
-  <body>
-    <p>NodeJS Chat app</p>
+  <body class="chat">
+    <div class="chat__sidebar">
+      <h3>People</h3> 
+      <div id="users"></div>
+    </div>
 
-    <ol id="message-list"></ol>
+    <div class="chat__main">
+      <ol id="message-list" class="chat__messages"></ol>
 
-    <form id="message-form">
-      <input type="text" placeholder="Message" name="message" id="message-input"/>
-      <button>Send</button>
-    </form>
-
-    <button id="send-location">Send Location</button>
+      <div class="chat__footer">
+        <form id="message-form">
+          <input autofocus autocomplete="off" type="text" placeholder="Message" name="message" id="message-input"/>
+          <button>Send</button>
+        </form>
+        <button id="send-location">Send Location</button>
+      </div>
+    </div>
 
     <script src="/socket.io/socket.io.js" charset="utf-8"></script>
     <script src="/js/libs/jquery-3.3.1.min.js" charset="utf-8"></script>
