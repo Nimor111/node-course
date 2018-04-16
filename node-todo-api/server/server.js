@@ -60,21 +60,23 @@ app.get('/todos/:id', authenticate, (req, res) => {
     });
 });
 
-app.delete('/todos/:id', authenticate, (req, res) => {
-  if (!ObjectID.isValid(req.params.id)) {
-    return res.status(400).send();
-  }
+app.delete('/todos/:id', authenticate, async (req, res) => {
+  try {
+    if (!ObjectID.isValid(req.params.id)) {
+      return res.status(400).send();
+    }
 
-  Todo.findOneAndRemove({_id: req.params.id, _creator: req.user._id})
-    .then(todo => {
-      if (!todo) {
-        return res.status(404).send({error: 'Todo not found!'});
-      }
-      res.json(todo);
-    })
-    .catch(err => {
-      res.status(400).send(err);
+    const todo = await Todo.findOneAndRemove({
+      _id: req.params.id,
+      _creator: req.user._id,
     });
+    if (!todo) {
+      return res.status(404).send({error: 'Todo not found!'});
+    }
+    res.json(todo);
+  } catch (err) {
+    res.status(400).send(err);
+  }
 });
 
 app.patch('/todos/:id', authenticate, (req, res) => {
@@ -112,45 +114,43 @@ app.patch('/todos/:id', authenticate, (req, res) => {
 /**** Todo routes ****/
 
 /**** User routes ****/
-app.post('/users', (req, res) => {
-  const body = _.pick(req.body, ['email', 'password']);
+app.post('/users', async (req, res) => {
+  try {
+    const body = _.pick(req.body, ['email', 'password']);
 
-  const user = new User(body);
+    const user = new User(body);
 
-  user
-    .save()
-    .then(() => {
-      return user.generateAuthToken();
-    })
-    .then(token => {
-      res.header('x-auth', token).send(user);
-    })
-    .catch(err => res.status(400).send(err));
+    await user.save();
+    const token = await user.generateAuthToken();
+    res.header('x-auth', token).send(user);
+  } catch (err) {
+    res.status(400).send(err);
+  }
 });
 
 app.get('/users/profile', authenticate, (req, res) => {
   res.send(req.user);
 });
 
-app.post('/users/login', (req, res) => {
-  const body = _.pick(req.body, ['email', 'password']);
+app.post('/users/login', async (req, res) => {
+  try {
+    const body = _.pick(req.body, ['email', 'password']);
 
-  User.findByCredentials(body.email, body.password)
-    .then(user => {
-      return user
-        .generateAuthToken()
-        .then(token => res.header('x-auth', token).send(user));
-    })
-    .catch(err => res.status(400).send());
+    const user = await User.findByCredentials(body.email, body.password);
+    const token = await user.generateAuthToken();
+    res.header('x-auth', token).send(user);
+  } catch (err) {
+    res.status(400).send();
+  }
 });
 
-app.delete('/users/logout', authenticate, (req, res) => {
-  req.user
-    .removeToken(req.token)
-    .then(() => {
-      res.status(200).send();
-    })
-    .catch(() => res.status(400).send());
+app.delete('/users/logout', authenticate, async (req, res) => {
+  try {
+    await req.user.removeToken(req.token);
+    res.status(200).send();
+  } catch (err) {
+    res.status(400).send();
+  }
 });
 /**** User routes ****/
 
