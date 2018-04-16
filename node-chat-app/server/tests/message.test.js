@@ -20,7 +20,7 @@ describe('generateMessage', () => {
   });
 });
 
-describe('generateLocationMessage', function() {
+describe('generateLocationMessage', () => {
   it('should generate correct location object', () => {
     const longitude = faker.address.longitude();
     const latitude = faker.address.latitude();
